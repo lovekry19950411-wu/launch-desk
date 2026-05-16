@@ -343,6 +343,26 @@ h1 { font-size: 24px; line-height: 1.02; }
   border-color: color-mix(in srgb, #b7d2bd 36%, var(--line));
 }
 
+.worldOpenLink {
+  min-height: 34px;
+  border: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
+  background: color-mix(in srgb, var(--field) 82%, transparent);
+  color: var(--text);
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.worldOpenLink:hover {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  color: var(--activeText);
+}
+
 .form { display: grid; gap: 12px; }
 .missionHeader {
   border: 1px solid var(--line);

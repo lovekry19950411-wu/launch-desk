@@ -186,6 +186,7 @@ export function App() {
   const [output, setOutput] = useState("");
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [isHumanVerified, setIsHumanVerified] = useState(false);
   const [error, setError] = useState("");
   const runtimeQueue = useRef<QueuedUiEvent[]>([]);
   const runtimeTimer = useRef<number | null>(null);
@@ -199,6 +200,8 @@ export function App() {
   const readiness = getReadiness(toolEvents);
   const riskLevel = getRiskLevel(readiness?.score);
   const trace = [...events].reverse().find((event): event is Extract<StreamEvent, { type: "done" }> => event.type === "done");
+  const requiresWorldVerification = Boolean(import.meta.env.VITE_WORLD_APP_ID);
+  const canRunWorkflow = !requiresWorldVerification || isHumanVerified;
 
   function switchLanguage(next: Language) {
     setLanguage(next);
@@ -240,6 +243,10 @@ export function App() {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!canRunWorkflow) {
+      setError("Verify human with World ID before running the launch workflow.");
+      return;
+    }
     setOutput("");
     setEvents([]);
     setError("");
@@ -392,7 +399,7 @@ export function App() {
             {t.chips.map((chip) => <span key={chip}>{chip}</span>)}
           </div>
 
-          <WorldHumanGate />
+          <WorldHumanGate verified={isHumanVerified} onVerified={() => setIsHumanVerified(true)} />
 
           <form onSubmit={submit} className="form">
             <div className="missionHeader">
@@ -421,9 +428,9 @@ export function App() {
               <span>{t.assets}</span>
               <textarea value={form.assets} onChange={(event) => setForm({ ...form, assets: event.target.value })} rows={3} />
             </label>
-            <button disabled={isRunning} className="primary">
+            <button disabled={isRunning || !canRunWorkflow} className="primary">
               {isRunning ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-              {isRunning ? t.running : t.submit}
+              {!canRunWorkflow ? "Verify human first" : isRunning ? t.running : t.submit}
             </button>
           </form>
         </aside>

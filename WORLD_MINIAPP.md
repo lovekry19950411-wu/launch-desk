@@ -29,6 +29,21 @@ WORLD_ID_ENVIRONMENT=production
 
 `WORLD_RP_SIGNING_KEY` is a server secret. Never expose it in frontend env vars.
 
+If you deploy `world-miniapp` as a Vercel branch preview, add the same variables to
+the **Preview** environment too. Branch deployments will not read Production-only
+variables.
+
+If a World App store click opens the URL in an external browser, confirm the
+Developer Portal app type is **Mini App**, not **External**, and use the mini app
+launch URL format when testing manually:
+
+```text
+https://world.org/mini-app?app_id=app_xxxxx&path=%2F
+```
+
+Do not append `open_out_of_window=true`; that flag intentionally forces the app
+to open outside the World App webview.
+
 ## Local Run
 
 ```bash
