@@ -280,6 +280,69 @@ h1 { font-size: 24px; line-height: 1.02; }
   font-weight: 800;
 }
 
+.worldGate {
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.035), transparent 54%),
+    color-mix(in srgb, var(--panelSoft) 80%, transparent);
+  border-radius: 8px;
+  padding: 12px;
+  margin: -4px 0 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.worldGateCopy {
+  display: grid;
+  gap: 4px;
+}
+
+.worldGateCopy span {
+  color: var(--activeText);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.worldGateCopy strong {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.worldGateCopy p,
+.worldGateStatus {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.worldVerify {
+  min-height: 36px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+  background:
+    linear-gradient(145deg, rgba(236,216,167,0.17), rgba(196,161,104,0.08)),
+    color-mix(in srgb, var(--panelSoft) 82%, transparent);
+  color: var(--activeText);
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.worldVerify:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.worldVerify.verified {
+  color: #b7d2bd;
+  border-color: color-mix(in srgb, #b7d2bd 36%, var(--line));
+}
+
 .form { display: grid; gap: 12px; }
 .missionHeader {
   border: 1px solid var(--line);

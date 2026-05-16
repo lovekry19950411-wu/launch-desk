@@ -13,6 +13,7 @@ import {
   Sun
 } from "lucide-react";
 import { CSSProperties, FormEvent, ReactNode, useMemo, useRef, useState } from "react";
+import { WorldHumanGate } from "./WorldHumanGate";
 
 type StreamEvent =
   | { type: "tool_progress"; name: string; message: string; payload?: unknown }
@@ -390,6 +391,8 @@ export function App() {
           <div className="pillRow">
             {t.chips.map((chip) => <span key={chip}>{chip}</span>)}
           </div>
+
+          <WorldHumanGate />
 
           <form onSubmit={submit} className="form">
             <div className="missionHeader">

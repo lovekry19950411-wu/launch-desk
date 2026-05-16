@@ -17,5 +17,5 @@
     "jsx": "react-jsx",
     "types": ["node", "vitest/globals"]
   },
-  "include": ["agent", "server", "scripts", "src", "tests", "vite.config.ts"]
+  "include": ["agent", "api", "server", "scripts", "src", "tests", "vite.config.ts"]
 }

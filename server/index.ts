@@ -7,6 +7,7 @@ import { createLaunchDeskAgent } from "../agent/launchAgent";
 import { formatLaunchRequest, launchRequestSchema } from "../agent/types";
 import { createModelProvider, getModelName, getProviderName, isProviderConfigured } from "./provider";
 import { getRawTextDelta, getToolProgress, writeSse } from "./stream";
+import { createWorldRpContext, getWorldIdConfig, verifyWorldProof } from "./worldId";
 
 const app = express();
 const port = Number(process.env.PORT || 8799);
@@ -25,6 +26,34 @@ app.get("/api/health", (_req, res) => {
     dashscopeKeyConfigured: Boolean(process.env.DASHSCOPE_API_KEY),
     model: getModelName(provider)
   });
+});
+
+app.get("/api/world/config", (_req, res) => {
+  const config = getWorldIdConfig();
+  res.json({
+    appIdConfigured: Boolean(config.appId),
+    rpIdConfigured: Boolean(config.rpId),
+    signingKeyConfigured: Boolean(config.signingKey),
+    action: config.action,
+    environment: config.environment
+  });
+});
+
+app.post("/api/world/rp-context", (_req, res) => {
+  try {
+    res.json(createWorldRpContext());
+  } catch (error) {
+    res.status(400).json({ error: error instanceof Error ? error.message : "Unable to create World ID RP context." });
+  }
+});
+
+app.post("/api/world/verify", async (req, res) => {
+  try {
+    const result = await verifyWorldProof(req.body?.idkitResponse ?? req.body);
+    res.json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error instanceof Error ? error.message : "World ID verification failed." });
+  }
 });
 
 app.post("/api/plan", async (req, res) => {
