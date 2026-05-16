@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite/
+coverage/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Local logs
+*.log
+api-dev.*.log
+web-dev.*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local media captures
+*.mp4
+*.mov
+*.webm
+*.loom
