@@ -30,7 +30,7 @@ button, input, textarea { font: inherit; }
   padding: 18px;
   color: var(--text);
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   background:
     linear-gradient(135deg, rgba(235, 232, 225, 0.96), rgba(247, 244, 238, 0.9)),
     url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=80");
@@ -82,6 +82,110 @@ button, input, textarea { font: inherit; }
   gap: 18px;
   max-width: 1560px;
   margin: 0 auto;
+}
+
+.serviceSection {
+  position: relative;
+  z-index: 1;
+  max-width: 1560px;
+  margin: 18px auto 0;
+  border: 1px solid color-mix(in srgb, var(--line) 64%, transparent);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.038), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--panel) 82%, transparent), color-mix(in srgb, var(--panelSoft) 76%, transparent));
+  box-shadow:
+    0 24px 62px var(--shadowDeep),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px) saturate(108%);
+  padding: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 520px);
+  gap: 28px;
+  align-items: center;
+}
+
+.serviceCopy {
+  display: grid;
+  gap: 10px;
+}
+
+.serviceCopy span {
+  width: fit-content;
+  color: var(--activeText);
+  background: linear-gradient(180deg, rgba(215, 189, 134, 0.16), rgba(215, 189, 134, 0.06));
+  border: 1px solid rgba(215, 189, 134, 0.2);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.serviceCopy h2 {
+  max-width: 720px;
+  font-size: clamp(24px, 3vw, 42px);
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.serviceCopy p {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.contactGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.contactCard {
+  min-height: 78px;
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.04), transparent 52%),
+    color-mix(in srgb, var(--panelSoft) 82%, transparent);
+  color: var(--text);
+  text-decoration: none;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "icon label"
+    "icon value";
+  column-gap: 12px;
+  align-items: center;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.contactCard:hover {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  background:
+    linear-gradient(135deg, rgba(215,189,134,0.07), transparent 56%),
+    color-mix(in srgb, var(--panelSoft) 88%, transparent);
+  transform: translateY(-1px);
+}
+
+.contactCard svg {
+  grid-area: icon;
+  color: var(--activeText);
+}
+
+.contactCard span {
+  grid-area: label;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.contactCard strong {
+  grid-area: value;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.35;
 }
 
 .panel {
@@ -783,6 +887,7 @@ input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px
 @media (max-width: 980px) {
   .shell { padding: 12px; }
   .workspace { grid-template-columns: 1fr; }
+  .serviceSection { grid-template-columns: 1fr; padding: 22px; }
   .inputPanel, .streamPanel { min-height: auto; }
   .statusGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flowStack { grid-template-columns: 1fr; }

@@ -1,9 +1,11 @@
 import {
   CheckCircle2,
   ClipboardList,
+  Mail,
   Languages,
   Loader2,
   Megaphone,
+  MessageCircle,
   Moon,
   Send,
   ShieldAlert,
@@ -114,7 +116,14 @@ const copy = {
     activityIdle: "等待 workflow dispatch。",
     runtimeConsole: "Runtime event stream",
     runtimeIdle: "runtime idle / awaiting launch brief",
-    chips: ["Launch workflows", "Risk analysis", "Release planning", "PM execution"]
+    chips: ["Launch workflows", "Risk analysis", "Release planning", "PM execution"],
+    serviceEyebrow: "AI Prototype Studio",
+    serviceTitle: "需要 AI 工作流 MVP 或 AI startup demo？",
+    serviceBody: "目前可接 prototype / demo 製作。適合想把 AI workflow、agent runtime、MVP 產品概念快速做成可展示版本的 founder 或小團隊。",
+    serviceX: "X / Twitter",
+    serviceEmail: "Email",
+    serviceDm: "DM open for prototype work",
+    serviceEmailValue: "hello@example.com"
   },
   en: {
     kicker: "AI PM Toolchain API",
@@ -158,7 +167,14 @@ const copy = {
     activityIdle: "Waiting for workflow dispatch.",
     runtimeConsole: "Runtime event stream",
     runtimeIdle: "runtime idle / awaiting launch brief",
-    chips: ["Launch workflows", "Risk analysis", "Release planning", "PM execution"]
+    chips: ["Launch workflows", "Risk analysis", "Release planning", "PM execution"],
+    serviceEyebrow: "AI Prototype Studio",
+    serviceTitle: "Need an AI workflow MVP or startup demo?",
+    serviceBody: "Available for prototype work. I help founders and small teams turn AI workflow, agent runtime, and MVP product ideas into polished demos people can actually understand.",
+    serviceX: "X / Twitter",
+    serviceEmail: "Email",
+    serviceDm: "DM open for prototype work",
+    serviceEmailValue: "hello@example.com"
   }
 };
 
@@ -530,6 +546,26 @@ export function App() {
             </article>
           </div>
         </section>
+      </section>
+
+      <section className="serviceSection" aria-labelledby="service-title">
+        <div className="serviceCopy">
+          <span>{t.serviceEyebrow}</span>
+          <h2 id="service-title">{t.serviceTitle}</h2>
+          <p>{t.serviceBody}</p>
+        </div>
+        <div className="contactGrid" aria-label="Contact links">
+          <a className="contactCard" href="https://x.com/G9Yeu21" target="_blank" rel="noreferrer">
+            <MessageCircle size={17} />
+            <span>{t.serviceX}</span>
+            <strong>{t.serviceDm}</strong>
+          </a>
+          <a className="contactCard" href={`mailto:${t.serviceEmailValue}`}>
+            <Mail size={17} />
+            <span>{t.serviceEmail}</span>
+            <strong>{t.serviceEmailValue}</strong>
+          </a>
+        </div>
       </section>
     </main>
   );
