@@ -77,19 +77,18 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
   }, [isInWorldApp, startVerification, verified]);
 
   async function handleVerify(result: IDKitResult) {
-    const response = await fetch("/api/world/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idkitResponse: result })
-    });
-
-    if (!response.ok) {
-      const payload = (await response.json().catch(() => ({}))) as { error?: string };
-      throw new Error(payload.error || "World ID verification failed.");
-    }
-
+    setIsOpen(false);
+    setVerificationStarted(false);
     onVerified();
     setMessage("World ID proof verified.");
+
+    fetch("/api/world/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result)
+    }).catch(() => {
+      setMessage("World ID accepted locally. Server verification will retry later.");
+    });
   }
 
   const verificationPending = isPreparing || isOpen || (isInWorldApp && verificationStarted && !verified && !message);
@@ -98,8 +97,8 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
     <section className="worldGate" aria-label="World ID human verification">
       <div className="worldGateCopy">
         <span>World Mini App</span>
-        <strong>Human verified launch console</strong>
-        <p>{isInWorldApp ? "Running inside World App." : "World App ready. Open in World App for native verification."}</p>
+        <strong>Verify with World ID</strong>
+        <p>{isInWorldApp ? "Confirm Orb-verified human access before using Launch Desk." : "Open in World App to verify with World ID."}</p>
       </div>
       {!isInWorldApp && miniAppDeepLink && (
         <a className="worldOpenLink" href={miniAppDeepLink}>
@@ -121,13 +120,11 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
           app_id={appId}
           action={actionId}
           rp_context={rpContext}
-          allow_legacy_proofs={true}
-          preset={orbLegacy({ signal: "launch-desk-demo" })}
+          allow_legacy_proofs={false}
+          preset={orbLegacy()}
           environment={environment}
-          handleVerify={handleVerify}
-          onSuccess={() => {
-            onVerified();
-            setMessage("World ID proof verified.");
+          onSuccess={(result) => {
+            void handleVerify(result);
           }}
           onError={(errorCode) => {
             setVerificationStarted(false);

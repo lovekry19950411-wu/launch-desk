@@ -30,6 +30,19 @@ type WorkflowStatus = "running" | "completed";
 type StageStatus = "waiting" | "queued" | "initializing" | "running" | "validating" | "analyzing" | "streaming" | "finalized" | "completed";
 type RiskLevel = "low" | "medium" | "high";
 
+const WORLD_HUMAN_SESSION_KEY = "launchdesk.worldHumanVerified";
+const WORLD_PAYMENT_SESSION_KEY = "launchdesk.worldPaymentUnlocked";
+
+function readSessionFlag(key: string) {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem(key) === "true";
+}
+
+function writeSessionFlag(key: string) {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(key, "true");
+}
+
 type WorkflowItem = {
   name: string;
   label: string;
@@ -189,8 +202,8 @@ export function App() {
   const [output, setOutput] = useState("");
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [isHumanVerified, setIsHumanVerified] = useState(false);
-  const [isPaymentUnlocked, setIsPaymentUnlocked] = useState(false);
+  const [isHumanVerified, setIsHumanVerified] = useState(() => readSessionFlag(WORLD_HUMAN_SESSION_KEY));
+  const [isPaymentUnlocked, setIsPaymentUnlocked] = useState(() => readSessionFlag(WORLD_PAYMENT_SESSION_KEY));
   const [error, setError] = useState("");
   const runtimeQueue = useRef<QueuedUiEvent[]>([]);
   const runtimeTimer = useRef<number | null>(null);
@@ -207,6 +220,16 @@ export function App() {
   const requiresWorldVerification = Boolean(import.meta.env.VITE_WORLD_APP_ID);
   const requiresWorldPayment = requiresWorldVerification;
   const canRunWorkflow = !requiresWorldVerification || (isHumanVerified && (!requiresWorldPayment || isPaymentUnlocked));
+
+  function markHumanVerified() {
+    writeSessionFlag(WORLD_HUMAN_SESSION_KEY);
+    setIsHumanVerified(true);
+  }
+
+  function markPaymentUnlocked() {
+    writeSessionFlag(WORLD_PAYMENT_SESSION_KEY);
+    setIsPaymentUnlocked(true);
+  }
 
   function switchLanguage(next: Language) {
     setLanguage(next);
@@ -372,6 +395,33 @@ export function App() {
     enqueueRuntimeEvent({ type: "done", traceId: "mock-runtime-finalized" });
   }
 
+  if (requiresWorldVerification && !isHumanVerified) {
+    return (
+      <main className={`shell ${theme}`} lang={language === "zh" ? "zh-Hant" : "en"}>
+        <div className="ambientGrid" aria-hidden="true" />
+        <section className="worldEntry">
+          <aside className="panel inputPanel worldEntryCard">
+            <div className="brand">
+              <div className="brandMark"><Sparkles size={20} /></div>
+              <div>
+                <span className="kicker">{t.kicker}</span>
+                <h1>Launch Desk</h1>
+                <p>{t.tagline}</p>
+              </div>
+            </div>
+            <WorldHumanGate verified={isHumanVerified} onVerified={markHumanVerified} />
+          </aside>
+          <AccessLockPanel
+            icon={<LockKeyhole size={28} />}
+            title="Verify with World ID"
+            body="Confirm Orb-verified human access in World App before using Launch Desk."
+            state="world-id"
+          />
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className={`shell ${theme}`} lang={language === "zh" ? "zh-Hant" : "en"}>
       <div className="ambientGrid" aria-hidden="true" />
@@ -404,9 +454,9 @@ export function App() {
             {t.chips.map((chip) => <span key={chip}>{chip}</span>)}
           </div>
 
-          <WorldHumanGate verified={isHumanVerified} onVerified={() => setIsHumanVerified(true)} />
+          <WorldHumanGate verified={isHumanVerified} onVerified={markHumanVerified} />
           {requiresWorldVerification && (
-            <WorldPaymentGate verified={isHumanVerified} unlocked={isPaymentUnlocked} onUnlocked={() => setIsPaymentUnlocked(true)} />
+            <WorldPaymentGate verified={isHumanVerified} unlocked={isPaymentUnlocked} onUnlocked={markPaymentUnlocked} />
           )}
 
           <form onSubmit={submit} className="form">
