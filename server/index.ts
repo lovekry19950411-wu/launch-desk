@@ -41,7 +41,9 @@ app.get("/api/world/config", (_req, res) => {
 
 app.post("/api/world/rp-context", (_req, res) => {
   try {
-    res.json(createWorldRpContext());
+    void createWorldRpContext().then((context) => res.json(context)).catch((error) => {
+      res.status(400).json({ error: error instanceof Error ? error.message : "Unable to create World ID RP context." });
+    });
   } catch (error) {
     res.status(400).json({ error: error instanceof Error ? error.message : "Unable to create World ID RP context." });
   }

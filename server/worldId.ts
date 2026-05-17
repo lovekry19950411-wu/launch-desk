@@ -1,5 +1,3 @@
-import { signRequest } from "@worldcoin/idkit-core/signing";
-
 const WORLD_VERIFY_BASE_URL = "https://developer.world.org/api/v4/verify";
 
 export function getWorldIdConfig() {
@@ -12,12 +10,13 @@ export function getWorldIdConfig() {
   };
 }
 
-export function createWorldRpContext() {
+export async function createWorldRpContext() {
   const config = getWorldIdConfig();
   if (!config.rpId || !config.signingKey) {
     throw new Error("WORLD_RP_ID and WORLD_RP_SIGNING_KEY must be configured.");
   }
 
+  const { signRequest } = await import("@worldcoin/idkit-core/signing");
   const signature = signRequest({
     signingKeyHex: config.signingKey,
     action: config.action,
