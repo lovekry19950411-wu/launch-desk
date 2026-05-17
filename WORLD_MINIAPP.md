@@ -73,6 +73,29 @@ Output Directory: dist
 
 The `/api/world/rp-context` and `/api/world/verify` files are Vercel serverless functions.
 
+## Current Verification Notes
+
+Latest checked branch alias:
+
+```text
+https://launch-desk-git-world-miniapp-sheng-pung-wus-projects.vercel.app
+```
+
+If the page or `/api/world/config` returns a Vercel Authentication screen, the
+World App cannot reach the mini app or verification API. Disable Deployment
+Protection for this branch deployment, or promote the WLD branch to a public
+production URL before submitting/testing in World App.
+
+The app code now uses the official universal link format:
+
+```text
+https://world.org/mini-app?app_id=app_xxxxx&path=%2F
+```
+
+This is different from a normal Vercel URL. Opening the normal Vercel URL in a
+desktop browser is expected to behave like a normal website; the Mini App
+container only exists when launched through World App / world.org mini app link.
+
 ## Official Docs Checked
 
 - World MiniKit initialization: https://docs.world.org/mini-apps/quick-start/init
