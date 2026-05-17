@@ -111,6 +111,17 @@ scripts/
   verify-stream.ts            End-to-end streamed API verifier
 ```
 
+## World Mini App Branch
+
+The `world-miniapp` branch packages Launch Desk as a World Mini App prototype:
+
+- World ID / IDKit Orb verification gate
+- World Pay unlock priced at `0.1 WLD`
+- Fixed Vercel branch alias for World App testing
+- Mock runtime preserved for stable review/demo behavior
+
+See `WORLD_MINIAPP.md` for deployment variables, review copy, and validation notes.
+
 ## Extending
 
 Add a new tool in `agent/tools/launchTools.ts`, export it in `launchTools`, then update the agent instructions in `agent/launchAgent.ts` so the model knows when to use it. For larger workflows, add specialist agents and expose them via `agent.asTool(...)` or handoffs.

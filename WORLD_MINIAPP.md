@@ -4,9 +4,29 @@ This branch wraps Launch Desk with the minimal World Mini App layer:
 
 - MiniKit initialization via `MiniKitProvider`
 - World App runtime detection
-- World ID / IDKit human verification entry
+- World ID / IDKit Orb verification gate
+- World Pay WLD unlock flow
 - Server endpoints for RP context signing and proof verification
 - Existing Launch Desk mock runtime remains unchanged
+
+## Current Submission Status
+
+This branch is ready as a World Mini App prototype submission build.
+
+Verified behavior:
+
+1. User opens the Mini App inside World App.
+2. Launch Desk shows a World ID verification gate before the main workflow.
+3. The IDKit request uses `preset={orbLegacy()}` and `allow_legacy_proofs={false}` for Orb-level verification.
+4. After verification, the app shows a World Pay unlock for `0.1 WLD`.
+5. If the wallet has insufficient WLD, World App redirects the user to top up.
+6. The workflow remains locked until payment is completed.
+
+Fixed public branch URL:
+
+```text
+https://launch-desk-git-world-miniapp-sheng-pung-wus-projects.vercel.app
+```
 
 ## Required World Developer Portal Values
 
@@ -27,7 +47,7 @@ WORLD_RP_SIGNING_KEY=0x...
 WORLD_ID_ENVIRONMENT=production
 
 VITE_WORLD_PAY_TO=0x_your_public_recipient_wallet
-VITE_WORLD_PAY_AMOUNT=0.5
+VITE_WORLD_PAY_AMOUNT=0.1
 VITE_WORLD_PAY_TOKEN=WLD
 ```
 
@@ -114,6 +134,38 @@ This is intentionally frontend-only for the prototype submission. A production
 version should add a server-side payment reference/nonce and verify the
 transaction before granting durable access.
 
+## Review / Grant Copy
+
+Short description:
+
+```text
+Launch Desk helps teams turn a product launch brief into a structured launch workflow with readiness scoring, risk analysis, owner checklists, and release copy.
+```
+
+Update log:
+
+```text
+This update adds World ID verification, World Pay WLD unlock, and an AI launch workflow runtime demo. Users verify with World ID, unlock the workflow with 0.1 WLD, then generate launch readiness, risk analysis, owner checklist, and release copy.
+```
+
+Support contact:
+
+```text
+lovekry19950411@gmail.com
+```
+
+Positioning:
+
+```text
+Launch Desk is an AI workflow tool for product launches. It uses World ID to verify human access and World Pay to unlock a small workflow demo inside World App.
+```
+
+Avoid these words in submission copy:
+
+```text
+official, guaranteed, grant guaranteed, investment, yield, token presale, beta, casino, raffle, lottery
+```
+
 ## Official Docs Checked
 
 - World MiniKit initialization: https://docs.world.org/mini-apps/quick-start/init
@@ -121,3 +173,5 @@ transaction before granting durable access.
 - IDKit React verification: https://docs.world.org/world-id/idkit/react
 - IDKit v4 verification flow: https://docs.world.org/world-id/idkit/integrate
 - World Pay command: https://docs.world.org/mini-apps/commands/pay
+- World Mini App review guidelines: https://docs.world.org/mini-apps/guidelines/policy
+- World Mini App guidelines: https://docs.world.org/mini-apps/guidelines/app-guidelines
