@@ -2,7 +2,7 @@ import { IDKitRequestWidget, orbLegacy, type IDKitResult, type RpContext } from 
 import { MiniKit } from "@worldcoin/minikit-js";
 import { useMiniKit } from "@worldcoin/minikit-js/minikit-provider";
 import { CheckCircle2, ExternalLink, Loader2, ShieldCheck } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type WorldRpResponse = {
   app_id: `app_${string}`;
@@ -26,8 +26,16 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
   const [rpContext, setRpContext] = useState<RpContext | null>(null);
   const [message, setMessage] = useState("");
   const { isInstalled } = useMiniKit();
+  const autoStartedRef = useRef(false);
 
-  const isInWorldApp = Boolean(isInstalled ?? MiniKit.isInWorldApp());
+  const isInWorldApp = useMemo(() => {
+    if (typeof isInstalled === "boolean") return isInstalled;
+    try {
+      return MiniKit.isInWorldApp();
+    } catch {
+      return false;
+    }
+  }, [isInstalled]);
 
   const miniAppDeepLink = useMemo(() => {
     if (!appId) return "";
@@ -35,7 +43,7 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
     return `https://world.org/mini-app?app_id=${appId}&path=${encodeURIComponent(currentPath || "/")}`;
   }, []);
 
-  async function startVerification() {
+  const startVerification = useCallback(async () => {
     if (!appId) {
       setMessage("Missing VITE_WORLD_APP_ID.");
       return;
@@ -58,7 +66,13 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
     } finally {
       setIsPreparing(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!isInWorldApp || verified || !appId || autoStartedRef.current) return;
+    autoStartedRef.current = true;
+    void startVerification();
+  }, [isInWorldApp, startVerification, verified]);
 
   async function handleVerify(result: IDKitResult) {
     const response = await fetch("/api/world/verify", {
