@@ -1,5 +1,6 @@
 import { IDKitRequestWidget, orbLegacy, type IDKitResult, type RpContext } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
+import { useMiniKit } from "@worldcoin/minikit-js/minikit-provider";
 import { CheckCircle2, ExternalLink, Loader2, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -24,19 +25,14 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
   const [isPreparing, setIsPreparing] = useState(false);
   const [rpContext, setRpContext] = useState<RpContext | null>(null);
   const [message, setMessage] = useState("");
+  const { isInstalled } = useMiniKit();
 
-  const isInWorldApp = useMemo(() => {
-    try {
-      return MiniKit.isInWorldApp();
-    } catch {
-      return false;
-    }
-  }, []);
+  const isInWorldApp = Boolean(isInstalled ?? MiniKit.isInWorldApp());
 
   const miniAppDeepLink = useMemo(() => {
     if (!appId) return "";
     const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    return `worldapp://mini-app?app_id=${appId}&path=${encodeURIComponent(currentPath || "/")}`;
+    return `https://world.org/mini-app?app_id=${appId}&path=${encodeURIComponent(currentPath || "/")}`;
   }, []);
 
   async function startVerification() {
