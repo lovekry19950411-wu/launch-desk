@@ -1,4 +1,4 @@
-import { signRequest } from "@worldcoin/idkit/signing";
+import { signRequest } from "@worldcoin/idkit-core/signing";
 
 const WORLD_VERIFY_BASE_URL = "https://developer.world.org/api/v4/verify";
 
