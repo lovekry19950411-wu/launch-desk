@@ -1,7 +1,7 @@
 import { IDKitRequestWidget, orbLegacy, type IDKitResult, type RpContext } from "@worldcoin/idkit";
 import { MiniKit } from "@worldcoin/minikit-js";
 import { CheckCircle2, ExternalLink, Loader2, ShieldCheck } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type WorldRpResponse = {
   app_id: `app_${string}`;
@@ -33,24 +33,11 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
     }
   }, []);
 
-  const miniAppLink = useMemo(() => {
+  const miniAppDeepLink = useMemo(() => {
     if (!appId) return "";
     const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    return `https://world.org/mini-app?app_id=${appId}&path=${encodeURIComponent(currentPath || "/")}`;
+    return `worldapp://mini-app?app_id=${appId}&path=${encodeURIComponent(currentPath || "/")}`;
   }, []);
-
-  useEffect(() => {
-    if (!appId || isInWorldApp || !miniAppLink) return;
-
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const alreadyRedirected = sessionStorage.getItem("launchdesk-world-opened");
-    if (!isMobile || alreadyRedirected) return;
-
-    sessionStorage.setItem("launchdesk-world-opened", "1");
-    window.setTimeout(() => {
-      window.location.href = miniAppLink;
-    }, 650);
-  }, [isInWorldApp, miniAppLink]);
 
   async function startVerification() {
     if (!appId) {
@@ -97,8 +84,8 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
         <strong>Human verified launch console</strong>
         <p>{isInWorldApp ? "Running inside World App." : "World App ready. Open in World App for native verification."}</p>
       </div>
-      {!isInWorldApp && miniAppLink && (
-        <a className="worldOpenLink" href={miniAppLink}>
+      {!isInWorldApp && miniAppDeepLink && (
+        <a className="worldOpenLink" href={miniAppDeepLink}>
           <ExternalLink size={15} />
           Open inside World App
         </a>
