@@ -1,6 +1,8 @@
 import {
   CheckCircle2,
   ClipboardList,
+  CreditCard,
+  LockKeyhole,
   Mail,
   Languages,
   Loader2,
@@ -14,6 +16,7 @@ import {
 } from "lucide-react";
 import { CSSProperties, FormEvent, ReactNode, useMemo, useRef, useState } from "react";
 import { WorldHumanGate } from "./WorldHumanGate";
+import { WorldPaymentGate } from "./WorldPaymentGate";
 
 type StreamEvent =
   | { type: "tool_progress"; name: string; message: string; payload?: unknown }
@@ -187,6 +190,7 @@ export function App() {
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [isHumanVerified, setIsHumanVerified] = useState(false);
+  const [isPaymentUnlocked, setIsPaymentUnlocked] = useState(false);
   const [error, setError] = useState("");
   const runtimeQueue = useRef<QueuedUiEvent[]>([]);
   const runtimeTimer = useRef<number | null>(null);
@@ -201,7 +205,8 @@ export function App() {
   const riskLevel = getRiskLevel(readiness?.score);
   const trace = [...events].reverse().find((event): event is Extract<StreamEvent, { type: "done" }> => event.type === "done");
   const requiresWorldVerification = Boolean(import.meta.env.VITE_WORLD_APP_ID);
-  const canRunWorkflow = !requiresWorldVerification || isHumanVerified;
+  const requiresWorldPayment = requiresWorldVerification;
+  const canRunWorkflow = !requiresWorldVerification || (isHumanVerified && (!requiresWorldPayment || isPaymentUnlocked));
 
   function switchLanguage(next: Language) {
     setLanguage(next);
@@ -244,7 +249,7 @@ export function App() {
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!canRunWorkflow) {
-      setError("Verify human with World ID before running the launch workflow.");
+      setError(isHumanVerified ? "Unlock workflow access with World Pay before running." : "Verify human with World ID before running the launch workflow.");
       return;
     }
     setOutput("");
@@ -400,6 +405,9 @@ export function App() {
           </div>
 
           <WorldHumanGate verified={isHumanVerified} onVerified={() => setIsHumanVerified(true)} />
+          {requiresWorldVerification && (
+            <WorldPaymentGate verified={isHumanVerified} unlocked={isPaymentUnlocked} onUnlocked={() => setIsPaymentUnlocked(true)} />
+          )}
 
           <form onSubmit={submit} className="form">
             <div className="missionHeader">
@@ -430,7 +438,7 @@ export function App() {
             </label>
             <button disabled={isRunning || !canRunWorkflow} className="primary">
               {isRunning ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-              {!canRunWorkflow ? "Verify human first" : isRunning ? t.running : t.submit}
+              {!canRunWorkflow ? (isHumanVerified ? "Pay to unlock first" : "Verify human first") : isRunning ? t.running : t.submit}
             </button>
           </form>
         </aside>
@@ -443,6 +451,21 @@ export function App() {
             <Status icon={<Megaphone />} label={t.statuses[3]} active={toolEvents.length > 2} />
           </div>
 
+          {requiresWorldVerification && !isHumanVerified ? (
+            <AccessLockPanel
+              icon={<LockKeyhole size={28} />}
+              title="Human verification required"
+              body="Preparing World ID check. The launch runtime stays locked until proof of human is verified."
+              state="world-id"
+            />
+          ) : requiresWorldPayment && !isPaymentUnlocked ? (
+            <AccessLockPanel
+              icon={<CreditCard size={28} />}
+              title="Payment unlock required"
+              body="World ID verified. Complete the small World Pay unlock to run the Launch Desk workflow runtime."
+              state="payment"
+            />
+          ) : (
           <div className="panel streamPanel">
             <div className="panelHeader">
               <div>
@@ -555,6 +578,7 @@ export function App() {
               {output ? output : t.placeholder}
             </article>
           </div>
+          )}
         </section>
       </section>
 
@@ -578,6 +602,22 @@ export function App() {
         </div>
       </section>
     </main>
+  );
+}
+
+function AccessLockPanel({ icon, title, body, state }: { icon: ReactNode; title: string; body: string; state: string }) {
+  return (
+    <div className="panel accessLock">
+      <div className="accessIcon">{icon}</div>
+      <span>{state}</span>
+      <h2>{title}</h2>
+      <p>{body}</p>
+      <div className="accessPulse" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
+    </div>
   );
 }
 

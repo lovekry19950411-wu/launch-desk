@@ -25,9 +25,15 @@ WORLD_RP_ID=rp_xxxxx
 WORLD_ACTION_ID=launch-desk-human
 WORLD_RP_SIGNING_KEY=0x...
 WORLD_ID_ENVIRONMENT=production
+
+VITE_WORLD_PAY_TO=0x_your_public_recipient_wallet
+VITE_WORLD_PAY_AMOUNT=0.5
+VITE_WORLD_PAY_TOKEN=WLD
 ```
 
 `WORLD_RP_SIGNING_KEY` is a server secret. Never expose it in frontend env vars.
+`VITE_WORLD_PAY_TO` is the public recipient wallet for the World Pay demo
+unlock. Do not put a private key in Vercel frontend environment variables.
 
 If you deploy `world-miniapp` as a Vercel branch preview, add the same variables to
 the **Preview** environment too. Branch deployments will not read Production-only
@@ -96,9 +102,22 @@ This is different from a normal Vercel URL. Opening the normal Vercel URL in a
 desktop browser is expected to behave like a normal website; the Mini App
 container only exists when launched through World App / world.org mini app link.
 
+## Payment Unlock Notes
+
+This branch includes a lightweight World Pay unlock after World ID verification:
+
+1. User completes World ID human verification.
+2. User pays the configured `VITE_WORLD_PAY_AMOUNT` to `VITE_WORLD_PAY_TO`.
+3. The Launch Desk workflow button unlocks for the demo session.
+
+This is intentionally frontend-only for the prototype submission. A production
+version should add a server-side payment reference/nonce and verify the
+transaction before granting durable access.
+
 ## Official Docs Checked
 
 - World MiniKit initialization: https://docs.world.org/mini-apps/quick-start/init
 - World Mini App migration: https://docs.world.org/mini-apps/migration/web-to-miniapp
 - IDKit React verification: https://docs.world.org/world-id/idkit/react
 - IDKit v4 verification flow: https://docs.world.org/world-id/idkit/integrate
+- World Pay command: https://docs.world.org/mini-apps/commands/pay
