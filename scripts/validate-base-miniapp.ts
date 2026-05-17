@@ -34,7 +34,10 @@ const miniapp = manifest.miniapp ?? {};
 const association = manifest.accountAssociation ?? {};
 
 assert(/<meta[^>]+name="base:app_id"/s.test(index), "Missing base:app_id meta tag");
-assert(/<meta[^>]+name="fc:miniapp"/s.test(index), "Missing fc:miniapp meta tag");
+warn(/<meta[^>]+name="fc:miniapp"/s.test(index), "Missing fc:miniapp compatibility meta tag.");
+assert(/<meta[^>]+property="og:title"/s.test(index), "Missing og:title meta tag");
+assert(/<meta[^>]+property="og:description"/s.test(index), "Missing og:description meta tag");
+assert(/<meta[^>]+property="og:image"/s.test(index), "Missing og:image meta tag");
 
 assert(miniapp.name === "Launch Desk", "Manifest miniapp.name should be Launch Desk");
 assert(typeof miniapp.homeUrl === "string" && miniapp.homeUrl.startsWith("https://"), "Manifest homeUrl must be HTTPS");
@@ -47,10 +50,10 @@ for (const asset of requiredAssets) {
   assert(existsSync(join(root, asset)), `Missing asset: ${asset}`);
 }
 
-warn(Boolean(association.header && association.payload && association.signature), "Base.dev accountAssociation still needs wallet signature.");
+warn(Boolean(association.header && association.payload && association.signature), "Optional Farcaster accountAssociation still needs wallet signature if you use legacy embed validation.");
 warn(
   manifest.baseBuilder?.ownerAddress && manifest.baseBuilder.ownerAddress !== "0x0000000000000000000000000000000000000000",
   "baseBuilder.ownerAddress still needs your Base Build wallet address."
 );
 
-console.log("Base Mini App local validation passed.");
+console.log("Base standard web app local validation passed.");
