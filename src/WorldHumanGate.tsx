@@ -25,6 +25,7 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
   const [isPreparing, setIsPreparing] = useState(false);
   const [rpContext, setRpContext] = useState<RpContext | null>(null);
   const [message, setMessage] = useState("");
+  const [verificationStarted, setVerificationStarted] = useState(false);
   const { isInstalled } = useMiniKit();
   const autoStartedRef = useRef(false);
 
@@ -50,6 +51,7 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
     }
 
     setIsPreparing(true);
+    setVerificationStarted(true);
     setMessage("");
 
     try {
@@ -85,7 +87,12 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
       const payload = (await response.json().catch(() => ({}))) as { error?: string };
       throw new Error(payload.error || "World ID verification failed.");
     }
+
+    onVerified();
+    setMessage("World ID proof verified.");
   }
+
+  const verificationPending = isPreparing || isOpen || (isInWorldApp && verificationStarted && !verified && !message);
 
   return (
     <section className="worldGate" aria-label="World ID human verification">
@@ -100,9 +107,9 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
           Open inside World App
         </a>
       )}
-      <button className={verified ? "worldVerify verified" : "worldVerify"} type="button" onClick={startVerification} disabled={isPreparing || verified || !appId}>
-        {verified ? <CheckCircle2 size={17} /> : isPreparing ? <Loader2 className="spin" size={17} /> : <ShieldCheck size={17} />}
-        {verified ? "Human verified" : isPreparing ? "Preparing..." : "Verify human"}
+      <button className={verified ? "worldVerify verified" : "worldVerify"} type="button" onClick={startVerification} disabled={verificationPending || verified || !appId}>
+        {verified ? <CheckCircle2 size={17} /> : verificationPending ? <Loader2 className="spin" size={17} /> : <ShieldCheck size={17} />}
+        {verified ? "Human verified" : verificationPending ? "Verifying..." : message ? "Retry verification" : "Verify human"}
       </button>
       {message && <p className="worldGateStatus">{message}</p>}
       {!appId && <p className="worldGateStatus">Set VITE_WORLD_APP_ID before production verification.</p>}
@@ -123,6 +130,7 @@ export function WorldHumanGate({ verified, onVerified }: WorldHumanGateProps) {
             setMessage("World ID proof verified.");
           }}
           onError={(errorCode) => {
+            setVerificationStarted(false);
             setMessage(`World ID error: ${errorCode}`);
           }}
         />
