@@ -9,7 +9,8 @@
     "dev:web": "vite --host 127.0.0.1",
     "build": "tsc && vite build",
     "test": "vitest run",
-    "verify:e2e": "tsx scripts/verify-stream.ts"
+    "verify:e2e": "tsx scripts/verify-stream.ts",
+    "verify:base": "tsx scripts/validate-base-miniapp.ts"
   },
   "keywords": [],
   "author": "",

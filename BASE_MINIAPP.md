@@ -29,6 +29,23 @@ Add:
 VITE_RUNTIME_MODE=mock
 ```
 
+## Local Validation
+
+Run:
+
+```bash
+npm run verify:base
+```
+
+Expected result:
+
+```text
+Base Mini App local validation passed.
+```
+
+Warnings are expected until Base.dev generates your `accountAssociation`
+signature and you replace `baseBuilder.ownerAddress` with your wallet address.
+
 ## Base.dev Verification Steps
 
 1. Deploy the `base-miniapp` branch.
