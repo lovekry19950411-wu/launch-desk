@@ -123,7 +123,7 @@ const copy = {
     serviceX: "X / Twitter",
     serviceEmail: "Email",
     serviceDm: "DM open for prototype work",
-    serviceEmailValue: "hello@example.com"
+    serviceEmailValue: "lovekry19950411@gmail.com"
   },
   en: {
     kicker: "AI PM Toolchain API",
@@ -174,7 +174,7 @@ const copy = {
     serviceX: "X / Twitter",
     serviceEmail: "Email",
     serviceDm: "DM open for prototype work",
-    serviceEmailValue: "hello@example.com"
+    serviceEmailValue: "lovekry19950411@gmail.com"
   }
 };
 

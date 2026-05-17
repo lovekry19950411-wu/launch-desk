@@ -1,0 +1,34 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "baseBuilder": {
+    "ownerAddress": "0x0000000000000000000000000000000000000000"
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Launch Desk",
+    "homeUrl": "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app",
+    "canonicalDomain": "launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app",
+    "iconUrl": "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/icon.png",
+    "splashImageUrl": "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/splash.png",
+    "splashBackgroundColor": "#080807",
+    "subtitle": "AI launch runtime",
+    "description": "AI workflow runtime that turns a launch brief into readiness score, risks, rollout plan, owners, and launch copy.",
+    "screenshotUrls": [
+      "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/screenshot-1.png",
+      "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/screenshot-2.png",
+      "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/screenshot-3.png"
+    ],
+    "primaryCategory": "productivity",
+    "tags": ["ai", "launch", "workflow", "pm"],
+    "heroImageUrl": "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/hero.png",
+    "tagline": "AI launch operating system",
+    "ogTitle": "Launch Desk",
+    "ogDescription": "AI launch workflow runtime for product teams.",
+    "ogImageUrl": "https://launch-desk-git-base-miniapp-sheng-pung-wus-projects.vercel.app/base/hero.png",
+    "noindex": false
+  }
+}
