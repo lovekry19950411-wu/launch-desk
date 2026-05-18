@@ -118,9 +118,8 @@ Expected result:
 Base standard web app local validation passed.
 ```
 
-Warnings are expected until you replace `baseBuilder.ownerAddress` with your
-Base Build wallet address. `accountAssociation` is kept only for compatibility
-with legacy embed validation and can be filled later if Base.dev asks for it.
+`accountAssociation` is kept only for compatibility with legacy embed validation
+and can be filled later if Base.dev asks for it.
 
 ## Base.dev Verification Steps
 
@@ -202,3 +201,12 @@ If Vercel gives a different URL, update the URLs in:
 - Base Mini Apps: https://docs.base.org/mini-apps/quickstart/create-new-miniapp
 - Base standard web app migration: https://docs.base.org/mini-apps/quickstart/migrate-to-standard-web-app
 - Base Mini Apps overview: https://www.base.org/build/mini-apps
+
+## Submission Package
+
+Use these files for Base-only applications:
+
+- `docs/base-submission-package.md`
+- `docs/base-demo-notes.md`
+- `docs/base-video-script.md`
+- `docs/base-application-checklist.md`
