@@ -1,6 +1,7 @@
 import {
   CheckCircle2,
   ClipboardList,
+  CreditCard,
   Mail,
   Languages,
   Loader2,
@@ -13,6 +14,7 @@ import {
   Sun
 } from "lucide-react";
 import { CSSProperties, FormEvent, ReactNode, useMemo, useRef, useState } from "react";
+import { BasePaymentState, connectBaseWallet, getBasePaymentConfig, payBaseUsdc } from "./basePayments";
 
 type StreamEvent =
   | { type: "tool_progress"; name: string; message: string; payload?: unknown }
@@ -186,6 +188,10 @@ export function App() {
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [error, setError] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
+  const [paymentState, setPaymentState] = useState<BasePaymentState>("idle");
+  const [paymentHash, setPaymentHash] = useState("");
+  const [paymentError, setPaymentError] = useState("");
   const runtimeQueue = useRef<QueuedUiEvent[]>([]);
   const runtimeTimer = useRef<number | null>(null);
   const runStartedAt = useRef<Date | null>(null);
@@ -198,6 +204,9 @@ export function App() {
   const readiness = getReadiness(toolEvents);
   const riskLevel = getRiskLevel(readiness?.score);
   const trace = [...events].reverse().find((event): event is Extract<StreamEvent, { type: "done" }> => event.type === "done");
+  const basePayment = useMemo(() => getBasePaymentConfig(), []);
+  const isBasePaymentConfigured = /^0x[a-fA-F0-9]{40}$/.test(basePayment.receiver);
+  const canRunWorkflow = paymentState === "confirmed";
 
   function switchLanguage(next: Language) {
     setLanguage(next);
@@ -239,6 +248,10 @@ export function App() {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!canRunWorkflow) {
+      setPaymentError(language === "zh" ? "請先完成 Base USDC 付款，才會解鎖生成。" : "Complete the Base USDC payment first to unlock generation.");
+      return;
+    }
     setOutput("");
     setEvents([]);
     setError("");
@@ -291,6 +304,44 @@ export function App() {
       setError(caught instanceof Error ? caught.message : "Unknown request failure");
     } finally {
       enqueueRuntimeEvent({ type: "done", traceId: "local-runtime-finalized" });
+    }
+  }
+
+  async function connectWallet() {
+    setPaymentError("");
+    if (!isBasePaymentConfigured) {
+      setPaymentState("missing-receiver");
+      setPaymentError(language === "zh" ? "尚未設定 BASE 收款地址。請在 Vercel 加入 VITE_BASE_USDC_RECEIVER。" : "Missing Base receiver. Add VITE_BASE_USDC_RECEIVER in Vercel.");
+      return;
+    }
+
+    try {
+      setPaymentState("connecting");
+      const account = await connectBaseWallet();
+      setWalletAddress(account);
+      setPaymentState("ready");
+    } catch (caught) {
+      setPaymentState(window.ethereum ? "failed" : "missing-wallet");
+      setPaymentError(caught instanceof Error ? caught.message : "Wallet connection failed.");
+    }
+  }
+
+  async function payWithBaseUsdc() {
+    setPaymentError("");
+    if (!isBasePaymentConfigured) {
+      setPaymentState("missing-receiver");
+      setPaymentError(language === "zh" ? "尚未設定 BASE 收款地址。請先補 VITE_BASE_USDC_RECEIVER。" : "Missing Base receiver. Add VITE_BASE_USDC_RECEIVER first.");
+      return;
+    }
+
+    try {
+      setPaymentState("paying");
+      const hash = await payBaseUsdc(basePayment);
+      setPaymentHash(hash);
+      setPaymentState("confirmed");
+    } catch (caught) {
+      setPaymentState("failed");
+      setPaymentError(caught instanceof Error ? caught.message : "Base USDC payment failed.");
     }
   }
 
@@ -418,9 +469,32 @@ export function App() {
               <span>{t.assets}</span>
               <textarea value={form.assets} onChange={(event) => setForm({ ...form, assets: event.target.value })} rows={3} />
             </label>
+            <div className="basePayBox">
+              <div>
+                <span className="basePayLabel">Base USDC unlock</span>
+                <strong>{basePayment.amountUsdc} USDC on Base</strong>
+                <p>
+                  {paymentState === "confirmed"
+                    ? language === "zh" ? "付款已送出，Launch workflow 已解鎖。" : "Payment sent. Launch workflow unlocked."
+                    : language === "zh" ? "依 Base 官方方向使用 Base 錢包與 USDC 單次解鎖。" : "Uses Base wallet and one-time USDC unlock, aligned with Base app direction."}
+                </p>
+              </div>
+              <div className="basePayActions">
+                <button type="button" className="secondaryButton" onClick={connectWallet} disabled={paymentState === "connecting" || paymentState === "paying" || paymentState === "confirmed"}>
+                  {paymentState === "connecting" ? <Loader2 className="spin" size={15} /> : <CreditCard size={15} />}
+                  {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : language === "zh" ? "連接錢包" : "Connect wallet"}
+                </button>
+                <button type="button" className="secondaryButton gold" onClick={payWithBaseUsdc} disabled={!isBasePaymentConfigured || paymentState === "paying" || paymentState === "confirmed"}>
+                  {paymentState === "paying" ? <Loader2 className="spin" size={15} /> : <CreditCard size={15} />}
+                  {paymentState === "confirmed" ? language === "zh" ? "已解鎖" : "Unlocked" : language === "zh" ? "支付 USDC" : "Pay USDC"}
+                </button>
+              </div>
+              {paymentHash && <a className="basePayHash" href={`https://basescan.org/tx/${paymentHash}`} target="_blank" rel="noreferrer">BaseScan {paymentHash.slice(0, 10)}...</a>}
+              {paymentError && <p className="basePayError">{paymentError}</p>}
+            </div>
             <button disabled={isRunning} className="primary">
               {isRunning ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-              {isRunning ? t.running : t.submit}
+              {isRunning ? t.running : canRunWorkflow ? t.submit : language === "zh" ? "付款後生成內容" : "Pay to generate"}
             </button>
           </form>
         </aside>

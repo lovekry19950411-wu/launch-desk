@@ -12,6 +12,7 @@ It intentionally stays separate from `world-miniapp`.
 - Public compatibility manifest at `/.well-known/farcaster.json`
 - Placeholder Base App assets under `/base`
 - Existing Launch Desk mock runtime remains unchanged
+- Base USDC unlock layer using the injected Base/Coinbase wallet provider
 
 ## Official Direction Checked
 
@@ -25,16 +26,26 @@ Current target:
 standard web app + Base tracking meta + Base.dev metadata readiness
 ```
 
+Current Base-specific addition:
+
+```text
+connect wallet -> switch to Base -> transfer USDC -> unlock Launch Desk generation
+```
+
+The branch uses native EIP-1193 wallet calls and the official Base USDC contract
+on Base mainnet. This keeps the demo lightweight while still being Base-native.
+
 Future Base-specific additions:
 
 ```text
-wallet connection with wagmi/viem
 SIWE auth if needed
 Paymaster / gasless action
-Base-native payment or unlock flow
+MiniKit / OnchainKit provider wrapper if Base.dev requires deeper in-app hooks
+x402 paid API route if Launch Desk becomes API-first paid infrastructure
 ```
 
-These are intentionally not added in this first submission shell.
+These are intentionally not added yet so WLD remains isolated and the Base branch
+stays easy to review.
 
 ## Funding Fit
 
@@ -86,7 +97,12 @@ Add:
 
 ```text
 VITE_RUNTIME_MODE=mock
+VITE_BASE_USDC_AMOUNT=1
+VITE_BASE_USDC_RECEIVER=your_public_base_wallet_address
 ```
+
+`VITE_BASE_USDC_RECEIVER` is a public receiving address. Do not paste private
+keys into Vercel.
 
 ## Local Validation
 
@@ -121,15 +137,19 @@ with legacy embed validation and can be filled later if Base.dev asks for it.
    - Screenshots: `/base/screenshot-1.png`, `/base/screenshot-2.png`, `/base/screenshot-3.png`
    - Support email: `lovekry19950411@gmail.com`
 5. Add or confirm the Builder Code / owner wallet in Base.dev.
-6. Confirm the compatibility manifest is reachable:
+6. Add Vercel env vars:
+   - `VITE_RUNTIME_MODE=mock`
+   - `VITE_BASE_USDC_AMOUNT=1`
+   - `VITE_BASE_USDC_RECEIVER=<your public Base wallet>`
+7. Confirm the compatibility manifest is reachable:
    `https://your-base-url/.well-known/farcaster.json`
-7. If Base.dev asks for legacy account association, use the account association tool to generate:
+8. If Base.dev asks for legacy account association, use the account association tool to generate:
    - `accountAssociation.header`
    - `accountAssociation.payload`
    - `accountAssociation.signature`
-8. Replace the empty strings in `public/.well-known/farcaster.json`.
-9. Replace `baseBuilder.ownerAddress` with the wallet address used for Base Build.
-10. Commit, push, and redeploy.
+9. Replace the empty strings in `public/.well-known/farcaster.json`.
+10. Replace `baseBuilder.ownerAddress` with the wallet address used for Base Build.
+11. Commit, push, and redeploy.
 
 ## Submission Copy
 
@@ -149,6 +169,12 @@ Builder Grants angle:
 
 ```text
 Launch Desk is a shipped AI workflow prototype for startup launch operations. The Base version is prepared as a standard web app for Base App distribution, with a path toward wallet-based workflows, gasless actions, and Base-native unlocks.
+```
+
+Payment wording:
+
+```text
+Launch Desk uses Base-native USDC unlocks for paid workflow generation. The first version is intentionally simple: connect wallet, pay USDC on Base, then run the launch workflow demo.
 ```
 
 Avoid:

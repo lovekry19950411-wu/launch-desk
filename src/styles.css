@@ -333,6 +333,80 @@ input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.42), 0 12px 22px rgba(0,0,0,0.24);
 }
 .primary:disabled { opacity: 0.72; cursor: progress; }
+.secondaryButton {
+  min-height: 34px;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035), transparent 42%),
+    color-mix(in srgb, var(--panelSoft) 84%, transparent);
+  color: var(--text);
+  border-radius: 7px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+}
+.secondaryButton.gold {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+  color: var(--activeText);
+  background:
+    linear-gradient(180deg, rgba(215,189,134,0.16), rgba(215,189,134,0.055)),
+    color-mix(in srgb, var(--panelSoft) 84%, transparent);
+}
+.secondaryButton:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+.basePayBox {
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(215,189,134,0.10), transparent 56%),
+    color-mix(in srgb, var(--panelSoft) 82%, transparent);
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.basePayLabel {
+  display: block;
+  color: var(--activeText);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.basePayBox strong {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.25;
+}
+.basePayBox p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+.basePayActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.basePayHash {
+  color: var(--activeText);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  word-break: break-all;
+}
+.basePayError {
+  color: var(--errorText) !important;
+  font-weight: 800;
+}
 .spin { animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
