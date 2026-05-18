@@ -1,6 +1,7 @@
 const BASE_CHAIN_ID = "0x2105";
 const BASE_CHAIN_ID_DECIMAL = 8453;
 const BASE_USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const DEFAULT_BASE_USDC_RECEIVER = "0xc97785f7EEaBafFDE32436842AD4824cB4141f8b";
 const ERC20_TRANSFER_SELECTOR = "0xa9059cbb";
 
 type EthereumProvider = {
@@ -31,7 +32,7 @@ export type BasePaymentState =
 export function getBasePaymentConfig(): BasePaymentConfig {
   return {
     amountUsdc: import.meta.env.VITE_BASE_USDC_AMOUNT || "1",
-    receiver: import.meta.env.VITE_BASE_USDC_RECEIVER || ""
+    receiver: import.meta.env.VITE_BASE_USDC_RECEIVER || DEFAULT_BASE_USDC_RECEIVER
   };
 }
 

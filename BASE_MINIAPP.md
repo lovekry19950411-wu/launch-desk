@@ -98,7 +98,7 @@ Add:
 ```text
 VITE_RUNTIME_MODE=mock
 VITE_BASE_USDC_AMOUNT=1
-VITE_BASE_USDC_RECEIVER=your_public_base_wallet_address
+VITE_BASE_USDC_RECEIVER=0xc97785f7EEaBafFDE32436842AD4824cB4141f8b
 ```
 
 `VITE_BASE_USDC_RECEIVER` is a public receiving address. Do not paste private
@@ -140,7 +140,7 @@ with legacy embed validation and can be filled later if Base.dev asks for it.
 6. Add Vercel env vars:
    - `VITE_RUNTIME_MODE=mock`
    - `VITE_BASE_USDC_AMOUNT=1`
-   - `VITE_BASE_USDC_RECEIVER=<your public Base wallet>`
+   - `VITE_BASE_USDC_RECEIVER=0xc97785f7EEaBafFDE32436842AD4824cB4141f8b`
 7. Confirm the compatibility manifest is reachable:
    `https://your-base-url/.well-known/farcaster.json`
 8. If Base.dev asks for legacy account association, use the account association tool to generate:
@@ -148,7 +148,7 @@ with legacy embed validation and can be filled later if Base.dev asks for it.
    - `accountAssociation.payload`
    - `accountAssociation.signature`
 9. Replace the empty strings in `public/.well-known/farcaster.json`.
-10. Replace `baseBuilder.ownerAddress` with the wallet address used for Base Build.
+10. Confirm `baseBuilder.ownerAddress` matches the wallet address used for Base Build.
 11. Commit, push, and redeploy.
 
 ## Submission Copy
