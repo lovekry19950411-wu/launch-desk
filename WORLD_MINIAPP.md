@@ -166,6 +166,22 @@ Avoid these words in submission copy:
 official, guaranteed, grant guaranteed, investment, yield, token presale, beta, casino, raffle, lottery
 ```
 
+## Public Proof Links
+
+Use these links when a grant, review, or public-goods profile asks for proof of
+work or public project tracking:
+
+```text
+World App demo:
+https://launch-desk-git-world-miniapp-sheng-pung-wus-projects.vercel.app
+
+GitHub source:
+https://github.com/lovekry19950411-wu/launch-desk/tree/world-miniapp
+
+Giveth public project:
+https://giveth.io/project/launch-desk
+```
+
 ## Official Docs Checked
 
 - World MiniKit initialization: https://docs.world.org/mini-apps/quick-start/init
