@@ -64,6 +64,12 @@ Base receiver / builder address:
 0xc97785f7EEaBafFDE32436842AD4824cB4141f8b
 ```
 
+Base Builder Code:
+
+```text
+bc_9jnnvjew
+```
+
 Is the project currently live on Base?
 
 Recommended conservative answer:
@@ -86,6 +92,12 @@ Under 150 words:
 
 ```text
 Launch Desk is an early Base prototype for AI workflow execution. It helps founders and small product teams turn a rough launch brief into readiness scoring, risk analysis, owner checklists, rollout tasks, and launch copy. The Base version explores USDC unlocks for paid AI workflow generation, with a future path toward x402-powered workflow APIs. Funding would help improve wallet UX, payment confirmation, transaction proof, and Base-native workflow monetization. The goal is to make AI workflows feel less like chatbots and more like useful, paid execution infrastructure for builders.
+```
+
+Agent-focused version:
+
+```text
+Launch Desk is an early Base prototype for AI workflow execution. The current demo turns a launch brief into readiness scoring, risk analysis, owner checklists, rollout tasks, and launch copy. The next Base milestone is to connect Builder Code attribution, prepare a dedicated agent wallet, and explore x402-paid workflow APIs so other agents can pay per launch workflow request. This avoids forcing a smart contract too early while still aligning with Base's AI agents, USDC payments, and API monetization direction.
 ```
 
 ## Demo Video
@@ -130,6 +142,18 @@ Launch Desk turns a product launch brief into an AI-generated workflow: readines
 
 ```text
 Launch Desk is an early Base app prototype for AI workflow execution. It helps founders and small product teams turn rough launch ideas into structured release workflows. The Base version explores USDC unlocks for workflow generation, with a future path toward x402 paid workflow APIs that other apps or AI agents could call.
+```
+
+## Base AI Agents Direction
+
+```text
+Launch Desk is moving toward an AI agent workflow API on Base. The current prototype demonstrates the workflow runtime and Base USDC unlock direction. The next milestone is to connect Builder Code attribution, prepare a dedicated agent wallet, and explore x402-paid workflow APIs so other agents can pay per launch workflow request.
+```
+
+Do not claim a deployed smart contract yet. The current Base proof is:
+
+```text
+live app + Builder Code + USDC unlock direction + AI workflow runtime + x402 roadmap
 ```
 
 ## What Not To Mention

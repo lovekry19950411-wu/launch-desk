@@ -35,12 +35,23 @@ connect wallet -> switch to Base -> transfer USDC -> unlock Launch Desk generati
 The branch uses native EIP-1193 wallet calls and the official Base USDC contract
 on Base mainnet. This keeps the demo lightweight while still being Base-native.
 
+Current Builder Code:
+
+```text
+bc_9jnnvjew
+```
+
+This is the no-gas attribution step from Base.dev. Real onchain attribution still
+requires future transactions to include the ERC-8021 `dataSuffix`.
+
 Future Base-specific additions:
 
 ```text
 SIWE auth if needed
 Paymaster / gasless action
 MiniKit / OnchainKit provider wrapper if Base.dev requires deeper in-app hooks
+Builder Code dataSuffix on real transactions
+Agent wallet registration
 x402 paid API route if Launch Desk becomes API-first paid infrastructure
 ```
 
@@ -81,6 +92,15 @@ Paymaster Gas Credits
 
 Use this when Launch Desk adds a gasless save/mint/unlock action on Base.
 
+AI Agents direction:
+
+```text
+Agent wallet + Builder Code + x402 paid workflow API
+```
+
+This is currently a better fit than deploying a smart contract before the product
+has revenue.
+
 ## Deploy
 
 Deploy this branch as a separate Vercel project or branch deployment.
@@ -99,6 +119,7 @@ Add:
 VITE_RUNTIME_MODE=mock
 VITE_BASE_USDC_AMOUNT=1
 VITE_BASE_USDC_RECEIVER=0xc97785f7EEaBafFDE32436842AD4824cB4141f8b
+VITE_BASE_BUILDER_CODE=bc_9jnnvjew
 ```
 
 `VITE_BASE_USDC_RECEIVER` is a public receiving address. Do not paste private
@@ -198,9 +219,13 @@ If Vercel gives a different URL, update the URLs in:
 ## Official Docs Checked
 
 - Base funding: https://docs.base.org/get-started/get-funded
-- Base Mini Apps: https://docs.base.org/mini-apps/quickstart/create-new-miniapp
-- Base standard web app migration: https://docs.base.org/mini-apps/quickstart/migrate-to-standard-web-app
-- Base Mini Apps overview: https://www.base.org/build/mini-apps
+- Base apps: https://docs.base.org/apps/index
+- Base standard web app migration: https://docs.base.org/apps/guides/migrate-to-standard-web-app
+- Base AI agents: https://docs.base.org/ai-agents/index
+- Base agent wallets: https://docs.base.org/ai-agents/setup/wallet-setup
+- Base Builder Codes for agents: https://docs.base.org/ai-agents/setup/agent-builder-codes
+- Base Builder Codes for apps: https://docs.base.org/apps/builder-codes/app-developers
+- Base x402 accepting payments: https://docs.base.org/ai-agents/payments/accepting-payments
 
 ## Submission Package
 
