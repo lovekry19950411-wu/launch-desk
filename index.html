@@ -9,5 +9,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script src="https://oculus-sdk.humanlabs.world" crossorigin="anonymous"></script>
+    <script>
+      window.oculusLayer = window.oculusLayer || [];
+      function oculus() {
+        oculusLayer.push(arguments);
+      }
+      oculus("app_id", "app_0c03485f177b5feeb35beaea29aef197");
+    </script>
   </body>
 </html>
