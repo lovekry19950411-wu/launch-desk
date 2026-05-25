@@ -3,6 +3,8 @@ import cors from "cors";
 import express from "express";
 import { Runner } from "@openai/agents";
 import { randomUUID } from "node:crypto";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createLaunchDeskAgent } from "../agent/launchAgent";
 import { formatLaunchRequest, launchRequestSchema } from "../agent/types";
 import { createModelProvider, getModelName, getProviderName, isProviderConfigured } from "./provider";
@@ -11,6 +13,7 @@ import { createWorldRpContext, getWorldIdConfig, verifyWorldProof } from "./worl
 
 const app = express();
 const port = Number(process.env.PORT || 8799);
+const rootDir = dirname(dirname(fileURLToPath(import.meta.url)));
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
@@ -121,6 +124,12 @@ app.post("/api/plan", async (req, res) => {
   }
 });
 
-app.listen(port, "127.0.0.1", () => {
-  console.log(`Launch Desk API listening on http://127.0.0.1:${port}`);
+app.use(express.static(join(rootDir, "dist")));
+
+app.use((_req, res) => {
+  res.sendFile(join(rootDir, "dist", "index.html"));
+});
+
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Launch Desk listening on http://0.0.0.0:${port}`);
 });

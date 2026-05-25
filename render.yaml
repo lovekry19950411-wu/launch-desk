@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: launch-desk-world-miniapp
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: MODEL_PROVIDER
+        sync: false
+      - key: DASHSCOPE_API_KEY
+        sync: false
+      - key: DASHSCOPE_BASE_URL
+        sync: false
+      - key: ALIBABA_MODEL
+        sync: false
+      - key: WORLD_APP_ID
+        sync: false
+      - key: WORLD_RP_ID
+        sync: false
+      - key: WORLD_ACTION_ID
+        sync: false
+      - key: WORLD_RP_SIGNING_KEY
+        sync: false
+      - key: WORLD_ID_ENVIRONMENT
+        sync: false
+      - key: VITE_WORLD_APP_ID
+        sync: false
+      - key: VITE_WORLD_ACTION_ID
+        sync: false
+      - key: VITE_WORLD_ID_ENVIRONMENT
+        sync: false
+      - key: VITE_WORLD_PAY_TO
+        sync: false
+      - key: VITE_WORLD_PAY_AMOUNT
+        sync: false
+      - key: VITE_WORLD_PAY_TOKEN
+        sync: false
