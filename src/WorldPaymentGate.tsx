@@ -80,7 +80,7 @@ export function WorldPaymentGate({ verified, unlocked, onUnlocked }: WorldPaymen
             ? "Complete World ID verification first."
             : paymentConfigured
               ? "One small payment unlocks the demo workflow runtime."
-              : "Payment recipient is not configured yet. Set VITE_WORLD_PAY_TO in Vercel."}
+              : "Payment recipient is not configured yet. Set VITE_WORLD_PAY_TO in your hosting environment."}
         </p>
       </div>
       <button
