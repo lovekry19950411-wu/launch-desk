@@ -18,7 +18,7 @@ export async function createWorldRpContext() {
 
   const { signRequest } = await import("@worldcoin/idkit-core/signing");
   const signature = signRequest({
-    signingKeyHex: config.signingKey,
+    signingKeyHex: config.signingKey.trim().replace(/^0x/i, ""),
     action: config.action,
     ttl: 300
   });
