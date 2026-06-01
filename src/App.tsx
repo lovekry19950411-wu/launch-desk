@@ -1,6 +1,8 @@
 import {
   CheckCircle2,
   ClipboardList,
+  CreditCard,
+  LockKeyhole,
   Mail,
   Languages,
   Loader2,
@@ -13,6 +15,8 @@ import {
   Sun
 } from "lucide-react";
 import { CSSProperties, FormEvent, ReactNode, useMemo, useRef, useState } from "react";
+import { WorldHumanGate } from "./WorldHumanGate";
+import { WorldPaymentGate } from "./WorldPaymentGate";
 
 type StreamEvent =
   | { type: "tool_progress"; name: string; message: string; payload?: unknown }
@@ -25,6 +29,19 @@ type Theme = "light" | "dark";
 type WorkflowStatus = "running" | "completed";
 type StageStatus = "waiting" | "queued" | "initializing" | "running" | "validating" | "analyzing" | "streaming" | "finalized" | "completed";
 type RiskLevel = "low" | "medium" | "high";
+
+const WORLD_HUMAN_SESSION_KEY = "launchdesk.worldHumanVerified";
+const WORLD_PAYMENT_SESSION_KEY = "launchdesk.worldPaymentUnlocked";
+
+function readSessionFlag(key: string) {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem(key) === "true";
+}
+
+function writeSessionFlag(key: string) {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(key, "true");
+}
 
 type WorkflowItem = {
   name: string;
@@ -123,7 +140,7 @@ const copy = {
     serviceX: "X / Twitter",
     serviceEmail: "Email",
     serviceDm: "DM open for prototype work",
-    serviceEmailValue: "hello@example.com"
+    serviceEmailValue: "lovekry19950411@gmail.com"
   },
   en: {
     kicker: "AI PM Toolchain API",
@@ -174,7 +191,7 @@ const copy = {
     serviceX: "X / Twitter",
     serviceEmail: "Email",
     serviceDm: "DM open for prototype work",
-    serviceEmailValue: "hello@example.com"
+    serviceEmailValue: "lovekry19950411@gmail.com"
   }
 };
 
@@ -185,6 +202,8 @@ export function App() {
   const [output, setOutput] = useState("");
   const [events, setEvents] = useState<StreamEvent[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [isHumanVerified, setIsHumanVerified] = useState(() => readSessionFlag(WORLD_HUMAN_SESSION_KEY));
+  const [isPaymentUnlocked, setIsPaymentUnlocked] = useState(() => readSessionFlag(WORLD_PAYMENT_SESSION_KEY));
   const [error, setError] = useState("");
   const runtimeQueue = useRef<QueuedUiEvent[]>([]);
   const runtimeTimer = useRef<number | null>(null);
@@ -198,6 +217,19 @@ export function App() {
   const readiness = getReadiness(toolEvents);
   const riskLevel = getRiskLevel(readiness?.score);
   const trace = [...events].reverse().find((event): event is Extract<StreamEvent, { type: "done" }> => event.type === "done");
+  const requiresWorldVerification = Boolean(import.meta.env.VITE_WORLD_APP_ID);
+  const requiresWorldPayment = requiresWorldVerification;
+  const canRunWorkflow = !requiresWorldVerification || (isHumanVerified && (!requiresWorldPayment || isPaymentUnlocked));
+
+  function markHumanVerified() {
+    writeSessionFlag(WORLD_HUMAN_SESSION_KEY);
+    setIsHumanVerified(true);
+  }
+
+  function markPaymentUnlocked() {
+    writeSessionFlag(WORLD_PAYMENT_SESSION_KEY);
+    setIsPaymentUnlocked(true);
+  }
 
   function switchLanguage(next: Language) {
     setLanguage(next);
@@ -239,6 +271,10 @@ export function App() {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!canRunWorkflow) {
+      setError(isHumanVerified ? "Unlock workflow access with World Pay before running." : "Verify human with World ID before running the launch workflow.");
+      return;
+    }
     setOutput("");
     setEvents([]);
     setError("");
@@ -359,6 +395,33 @@ export function App() {
     enqueueRuntimeEvent({ type: "done", traceId: "mock-runtime-finalized" });
   }
 
+  if (requiresWorldVerification && !isHumanVerified) {
+    return (
+      <main className={`shell ${theme}`} lang={language === "zh" ? "zh-Hant" : "en"}>
+        <div className="ambientGrid" aria-hidden="true" />
+        <section className="worldEntry">
+          <aside className="panel inputPanel worldEntryCard">
+            <div className="brand">
+              <div className="brandMark"><Sparkles size={20} /></div>
+              <div>
+                <span className="kicker">{t.kicker}</span>
+                <h1>Launch Desk</h1>
+                <p>{t.tagline}</p>
+              </div>
+            </div>
+            <WorldHumanGate verified={isHumanVerified} onVerified={markHumanVerified} />
+          </aside>
+          <AccessLockPanel
+            icon={<LockKeyhole size={28} />}
+            title="Verify with World ID"
+            body="Confirm Orb-verified human access in World App before using Launch Desk."
+            state="world-id"
+          />
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className={`shell ${theme}`} lang={language === "zh" ? "zh-Hant" : "en"}>
       <div className="ambientGrid" aria-hidden="true" />
@@ -391,6 +454,11 @@ export function App() {
             {t.chips.map((chip) => <span key={chip}>{chip}</span>)}
           </div>
 
+          <WorldHumanGate verified={isHumanVerified} onVerified={markHumanVerified} />
+          {requiresWorldVerification && (
+            <WorldPaymentGate verified={isHumanVerified} unlocked={isPaymentUnlocked} onUnlocked={markPaymentUnlocked} />
+          )}
+
           <form onSubmit={submit} className="form">
             <div className="missionHeader">
               <span>{t.missionBrief}</span>
@@ -418,9 +486,9 @@ export function App() {
               <span>{t.assets}</span>
               <textarea value={form.assets} onChange={(event) => setForm({ ...form, assets: event.target.value })} rows={3} />
             </label>
-            <button disabled={isRunning} className="primary">
+            <button disabled={isRunning || !canRunWorkflow} className="primary">
               {isRunning ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-              {isRunning ? t.running : t.submit}
+              {!canRunWorkflow ? (isHumanVerified ? "Pay to unlock first" : "Verify human first") : isRunning ? t.running : t.submit}
             </button>
           </form>
         </aside>
@@ -433,6 +501,21 @@ export function App() {
             <Status icon={<Megaphone />} label={t.statuses[3]} active={toolEvents.length > 2} />
           </div>
 
+          {requiresWorldVerification && !isHumanVerified ? (
+            <AccessLockPanel
+              icon={<LockKeyhole size={28} />}
+              title="Human verification required"
+              body="Preparing World ID check. The launch runtime stays locked until proof of human is verified."
+              state="world-id"
+            />
+          ) : requiresWorldPayment && !isPaymentUnlocked ? (
+            <AccessLockPanel
+              icon={<CreditCard size={28} />}
+              title="Payment unlock required"
+              body="World ID verified. Complete the small World Pay unlock to run the Launch Desk workflow runtime."
+              state="payment"
+            />
+          ) : (
           <div className="panel streamPanel">
             <div className="panelHeader">
               <div>
@@ -545,6 +628,7 @@ export function App() {
               {output ? output : t.placeholder}
             </article>
           </div>
+          )}
         </section>
       </section>
 
@@ -568,6 +652,22 @@ export function App() {
         </div>
       </section>
     </main>
+  );
+}
+
+function AccessLockPanel({ icon, title, body, state }: { icon: ReactNode; title: string; body: string; state: string }) {
+  return (
+    <div className="panel accessLock">
+      <div className="accessIcon">{icon}</div>
+      <span>{state}</span>
+      <h2>{title}</h2>
+      <p>{body}</p>
+      <div className="accessPulse" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
+    </div>
   );
 }
 
