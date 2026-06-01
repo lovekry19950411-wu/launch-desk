@@ -1,5 +1,6 @@
 import { MiniKit } from "@worldcoin/minikit-js";
 import { Network, Tokens, tokenToDecimals, type PayResult } from "@worldcoin/minikit-js/commands";
+import { isAddress } from "viem";
 import { CheckCircle2, CreditCard, Loader2 } from "lucide-react";
 import { useState } from "react";
 
@@ -29,6 +30,11 @@ export function WorldPaymentGate({ verified, unlocked, onUnlocked }: WorldPaymen
       const recipient = payTo;
       if (!recipient) {
         setMessage("Payment recipient is not configured yet.");
+        return;
+      }
+
+      if (!isAddress(recipient)) {
+        setMessage("Payment recipient address is invalid. Check VITE_WORLD_PAY_TO configuration.");
         return;
       }
 
